@@ -48,6 +48,16 @@ for (let i=0; i<product.colors.length; i++) {
       
 })
 
+let addPanier = document.querySelector("#addToCart")
+
+
+addPanier.addEventListener("click", jsaispas)
+
+function jsaispas() {
+    window.localStorage.setItem("nom", "Les Bonnes Pièces !");
+    
+}
+
 
 
 
