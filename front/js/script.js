@@ -1,9 +1,11 @@
-fetch('http://localhost:3000/api/products').then(function (response) {
-	// The API call was successful!
-	return response.json();
-}).then(function (data) {
-	// This is the JSON from our response
+async function getProducts(){
+    let rep = await fetch('http://localhost:3000/api/products')
+    let reponse = await rep.json()
+    return reponse;
+}
 
+getProducts().then(function (data) {
+ console.log(data)
     for (let i=0; i<data.length; i++) {
         const product = data[i]
         const imageElement = document.createElement("img");
@@ -28,14 +30,23 @@ fetch('http://localhost:3000/api/products').then(function (response) {
         articleElement.appendChild(imageElement);
         articleElement.appendChild(titreElement);
         articleElement.appendChild(descriptionElement);
-    
-    
-    }
 
-    
-}).catch(function (err) {
-	// There was an error
-	console.warn('Something went wrong.', err);
-});
+
+}
+})
+
+// console.log(getProducts().then(function(data)))
+
+// .then(function (response) {
+// 	// The API call was successful!
+// 	return response.json();
+// }).then(function (data) {
+// 	// This is the JSON from our response
+
+// }).catch(function (err) {
+// 	// There was an error
+// 	console.warn('Something went wrong.', err);
+// });
+
 
 
