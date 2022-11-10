@@ -1,8 +1,7 @@
 
 const paramString = window.location.search;
 const searchParams = new URLSearchParams(paramString);
-
-let currentId = searchParams.get("id")
+const currentId = searchParams.get("id")
 
 async function getProduct(Id){
     let rep = await fetch('http://localhost:3000/api/products/' + Id)
@@ -37,7 +36,7 @@ for (let i=0; i<product.colors.length; i++) {
     color.value = product.colors[i]
     color.textContent = product.colors[i]
     addColors.appendChild(color)
-    console.log("bite")
+    
     
 }
 
@@ -48,53 +47,61 @@ for (let i=0; i<product.colors.length; i++) {
       
 })
 
-let addPanier = document.querySelector("#addToCart")
+let addToCart = document.querySelector("#addToCart")
 
 
-addPanier.addEventListener("click", jsaispas)
+addToCart.addEventListener("click", savePanier)
 
-function jsaispas() {
-    window.localStorage.setItem("nom", "Les Bonnes Pièces !");
-    
+function savePanier() {
+
+    const color = document.getElementById("colors")
+    const itemQuantity = document.getElementById("quantity")
+    let colorValue = color.options[color.selectedIndex].value;
+    let selectedQuantity = itemQuantity.valueAsNumber
+    let addProducts = {
+        id: currentId,
+        couleur: colorValue,
+        nombre: selectedQuantity,
 }
 
+    let myProducts = []
+    let savedCart = localStorage.getItem('panier')
+
+    // SI PAS DE COULEUR OU MAUVAISE QUANTITY
+
+    if (colorValue = "" || selectedQuantity < 1 || selectedQuantity > 100 ) {
+        alert("Veuillez choisir une couleur et une quantité comprise entre 1 et 100")
+    }   else if (savedCart) { // SI PANIER EXISTANT
+        
+        let parsedCart = JSON.parse(savedCart);
+        myProducts = parsedCart
+    
+        // SI ID ET COULEUR EXISTANTE // ATTRAPER L'OBJET EXISTANT ET RETURN
+
+        if (myProducts.find(function(product) { return currentId == product.id && colorValue == product.couleur})) {
+            let indexProduct = myProducts.findIndex(function(product) { return currentId == product.id && colorValue == product.couleur})
+            console.log(indexProduct)
+
+            // SI QUANTITE EXISTANTE + QUANTITE SELECTIONNE < 100 
+
+            if ((myProducts[indexProduct].nombre + selectedQuantity) <= 100) {
+            myProducts[indexProduct].nombre += selectedQuantity
+            } else { // SI > 100 
+                alert("Votre nombre de")
+            }
+
+
+        } else { // SI ID ET COULEUR NON EXISTANTE AJOUTER OBJET 
+            myProducts.push(addProducts)
+        }
+
+    } else {
+        myProducts.push(addProducts)
+    }
+
+    console.log(localStorage)
+
+    window.localStorage.setItem("panier", JSON.stringify(myProducts))
 
 
 
-
-
-
-
-// fetch('http://localhost:3000/api/products/' + currentId).then(function (response) {
-// 	// The API call was successful!
-// 	return response.json();
-// })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.catch(function (err) {
-	// There was an error
-	console.warn('Something went wrong.', err);
-});
-
-// console.log(paramString)
-
-// console.log(searchParams.get("id"))
