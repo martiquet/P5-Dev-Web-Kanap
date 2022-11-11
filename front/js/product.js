@@ -56,7 +56,8 @@ function savePanier() {
 
     const color = document.getElementById("colors")
     const itemQuantity = document.getElementById("quantity")
-    let colorValue = color.options[color.selectedIndex].value;
+    let colorValue = color.value
+    console.log(colorValue)
     let selectedQuantity = itemQuantity.valueAsNumber
     let addProducts = {
         id: currentId,
@@ -69,7 +70,7 @@ function savePanier() {
 
     // SI PAS DE COULEUR OU MAUVAISE QUANTITY
 
-    if (colorValue = "" || selectedQuantity < 1 || selectedQuantity > 100 ) {
+    if (colorValue == "" || selectedQuantity < 1 || selectedQuantity > 100 ) {
         alert("Veuillez choisir une couleur et une quantité comprise entre 1 et 100")
     }   else if (savedCart) { // SI PANIER EXISTANT
         
@@ -77,19 +78,33 @@ function savePanier() {
         myProducts = parsedCart
     
         // SI ID ET COULEUR EXISTANTE // ATTRAPER L'OBJET EXISTANT ET RETURN
+       const ifProductsExist = myProducts.find(function(product) { return currentId == product.id && colorValue == product.couleur})
 
-        if (myProducts.find(function(product) { return currentId == product.id && colorValue == product.couleur})) {
-            let indexProduct = myProducts.findIndex(function(product) { return currentId == product.id && colorValue == product.couleur})
-            console.log(indexProduct)
+
+       if ((ifProductsExist.nombre + selectedQuantity) <= 100) {
+            
+
+            } else { // SI > 100 
+                alert("Votre nombre de")
+                return
+            }
+
+        if (ifProductsExist) {
+            // let indexProduct = myProducts.findIndex(function(product) { return currentId == product.id && colorValue == product.couleur})
+            myProducts = myProducts.map(function(product){ 
+                
+                if (currentId == product.id && colorValue == product.couleur) {
+                    product.nombre = product.nombre + selectedQuantity
+                    
+                } 
+                
+                return product
+                
+            })
 
             // SI QUANTITE EXISTANTE + QUANTITE SELECTIONNE < 100 
 
-            if ((myProducts[indexProduct].nombre + selectedQuantity) <= 100) {
-            myProducts[indexProduct].nombre += selectedQuantity
-            } else { // SI > 100 
-                alert("Votre nombre de")
-            }
-
+     
 
         } else { // SI ID ET COULEUR NON EXISTANTE AJOUTER OBJET 
             myProducts.push(addProducts)
@@ -103,5 +118,4 @@ function savePanier() {
 
     window.localStorage.setItem("panier", JSON.stringify(myProducts))
 
-
-
+}
