@@ -3,6 +3,7 @@ const paramString = window.location.search;
 const searchParams = new URLSearchParams(paramString);
 const currentId = searchParams.get("id")
 
+
 async function getProduct(Id){
     let rep = await fetch('http://localhost:3000/api/products/' + Id)
     let reponse = await rep.json()
@@ -39,12 +40,7 @@ for (let i=0; i<product.colors.length; i++) {
     
     
 }
-
-
-
-    console.log(data)
-	// This is the JSON from our response
-      
+     
 })
 
 let addToCart = document.querySelector("#addToCart")
@@ -67,6 +63,7 @@ function savePanier() {
         id: currentId,
         couleur: colorValue,
         nombre: selectedQuantity,
+        
 }
 
     let myProducts = []
