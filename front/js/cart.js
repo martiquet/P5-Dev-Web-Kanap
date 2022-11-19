@@ -5,9 +5,11 @@ let myCart = JSON.parse(localStorage.getItem("panier"));
 let allItems = document.getElementById("cart__items");
 let totalQuant = document.getElementById("totalQuantity");
 let totalPrice = document.getElementById("totalPrice");
-let cartPrice = 0;
+let orderBtn = document.getElementById("order")
+let cartPrice = 0
 totalPrice.textContent = cartPrice;
 totalQuant.textContent = 0;
+
 
 const inputRegex = [
   {
@@ -154,7 +156,9 @@ function updatePriceQuant() {
   );
 }
 
-function checkRegex() {
+
+
+function checkRegex() { // RECUPERATION DU TABLEAU ET TEST DES INPUTS 
   for (let input of inputRegex) {
     let inputHtml = document.getElementById(input.id);
     let error = document.getElementById(input.id + "ErrorMsg");
@@ -170,3 +174,34 @@ function checkRegex() {
 }
 
 checkRegex();
+
+orderBtn.addEventListener("click", (event) => {
+  event.preventDefault()
+  let contact = {
+    firstName: "",
+    lastName: "",
+    address:"",
+    city:"",
+    email:"",
+  }
+
+  for (let input of inputRegex) {
+    contact[input.id]=document.getElementById(input.id).value
+  }
+  
+  fetch("http://localhost:3000/api/products/order", {
+    method: 'POST',
+    headers : {
+      'Content-Type':'application/json'
+    },
+    body: JSON.stringify( {
+      contact: contact,
+      products: myCart.map((item)=>item.id ) 
+    })
+  })
+
+
+
+  // console.log(contact)
+
+})
