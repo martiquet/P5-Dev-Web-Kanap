@@ -1,13 +1,16 @@
+// RECUPERATION DE L'ID DU PRODUIT DANS L'URL
 const paramString = window.location.search;
 const searchParams = new URLSearchParams(paramString);
 const currentId = searchParams.get("id");
 
+// RECUPERATION DES DONNEES DU PRODUIT EN FONCTION DE SON ID EN JSON
 async function getProduct(Id) {
   let rep = await fetch("http://localhost:3000/api/products/" + Id);
   let reponse = await rep.json();
   return reponse;
 }
 
+// RECUPERATION DES DONNEES JSON ET AJOUT DE L'ELEMENT EN HTML
 getProduct(currentId).then(function (data) {
   let product = data;
   const imageElement = document.createElement("img");
@@ -25,9 +28,9 @@ getProduct(currentId).then(function (data) {
   const description = document.getElementById("description");
   description.textContent = product.description;
 
- 
   let addColors = document.querySelector("#colors");
 
+  // AJOUT DE CHAQUE COULEUR PRESENTE POUR UN PRODUIT DANS LES DONNEES JSON
   for (let i = 0; i < product.colors.length; i++) {
     const color = document.createElement("option");
     color.value = product.colors[i];
@@ -40,7 +43,7 @@ let addToCart = document.querySelector("#addToCart");
 
 addToCart.addEventListener("click", savePanier);
 
-// CREATION OU AJOUTE PANIER
+// CREATION OU AJOUT AU PANIER
 
 function savePanier() {
   const color = document.getElementById("colors");
@@ -64,16 +67,15 @@ function savePanier() {
       "Veuillez choisir une couleur et une quantité comprise entre 1 et 100"
     );
   } else if (savedCart) {
-    // SI PANIER EXISTANT
+    // SI PANIER EXISTANT, RECUPERATION JSON PARSE(TABLEAU)
     let parsedCart = JSON.parse(savedCart);
     myProducts = parsedCart;
     const ifProductsExist = myProducts.find(function (product) {
       return currentId == product.id && colorValue == product.couleur;
     });
 
-    // SI ID ET COULEUR EXISTANTE // ATTRAPER L'OBJET EXISTANT ET RETURN
-
     if (ifProductsExist) {
+      // SI ID ET COULEUR EXISTANTE // ATTRAPER L'OBJET EXISTANT ET RETURN
       if (ifProductsExist.nombre + selectedQuantity <= 100) {
         myProducts = myProducts.map(function (product) {
           if (currentId == product.id && colorValue == product.couleur) {
@@ -83,7 +85,7 @@ function savePanier() {
         });
       } else {
         // SI > 100
-        alert("Votre nombre de");
+        alert("Votre nombre de ");
         return;
       }
     } else {
@@ -95,9 +97,5 @@ function savePanier() {
     myProducts.push(addProducts);
   }
 
-  console.log(localStorage);
-
   window.localStorage.setItem("panier", JSON.stringify(myProducts));
-
-  console.log(localStorage);
 }

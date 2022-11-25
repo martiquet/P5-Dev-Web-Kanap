@@ -5,11 +5,10 @@ let myCart = JSON.parse(localStorage.getItem("panier"));
 let allItems = document.getElementById("cart__items");
 let totalQuant = document.getElementById("totalQuantity");
 let totalPrice = document.getElementById("totalPrice");
-let orderBtn = document.getElementById("order")
-let cartPrice = 0
+let orderBtn = document.getElementById("order");
+let cartPrice = 0;
 totalPrice.textContent = cartPrice;
 totalQuant.textContent = 0;
-
 
 const inputRegex = [
   {
@@ -49,6 +48,7 @@ async function getProduct(Id) {
 // CREATION ELEMENT ARTICLE POUR CHAQUE PRODUIT DANS LE PANIER
 
 if (myCart) {
+  //TOTAL D'ARTICLE
   totalQuant.textContent = myCart
     .map((item) => item.nombre)
     .reduce((prev, curr) => prev + curr, 0);
@@ -108,7 +108,7 @@ if (myCart) {
         `[data-id="${myCart[i].id}"][data-color="${myCart[i].couleur}"]`
       );
 
-      // SUPPRESSION D'UN ARTICLE ET MISE A JOUR TABLEAU + LOCALE STORAGE
+      // SUPPRESSION D'UN ARTICLE ET MISE A JOUR TABLEAU // LOCALE STORAGE // PRIX TOTAL
 
       deleteItem.addEventListener("click", function () {
         let returnCart = myCart.findIndex(
@@ -126,7 +126,7 @@ if (myCart) {
       inputQuant.addEventListener("input", function () {
         if (inputQuant.value < 1 || inputQuant.value > 100) {
           // SI NOUVEL INPUT N'EST PAS COMPRIS ENTRE 1 et 100
-          alert("peux pas");
+          alert("Veuillez choisir une quantité comprise entre 1 et 100");
           inputQuant.value = 1;
         } else {
           myCart[i].nombre = parseInt(inputQuant.value);
@@ -156,9 +156,8 @@ function updatePriceQuant() {
   );
 }
 
-
-
-function checkRegex() { // RECUPERATION DU TABLEAU ET TEST DES INPUTS 
+function checkRegex() {
+  // RECUPERATION DU TABLEAU ET TEST DES INPUTS
   for (let input of inputRegex) {
     let inputHtml = document.getElementById(input.id);
     let error = document.getElementById(input.id + "ErrorMsg");
@@ -166,7 +165,9 @@ function checkRegex() { // RECUPERATION DU TABLEAU ET TEST DES INPUTS
       let testInput = input.regex.test(inputHtml.value);
       if (!testInput) {
         error.textContent = input.error;
-        inputHtml.value = ""
+        inputHtml.value = "";
+      } else {
+        error.textContent = "";
       }
       console.log(input.regex.test(inputHtml.value));
     });
@@ -175,33 +176,38 @@ function checkRegex() { // RECUPERATION DU TABLEAU ET TEST DES INPUTS
 
 checkRegex();
 
+// FONCTION COMMANDER AU CLICK
 orderBtn.addEventListener("click", (event) => {
-  event.preventDefault()
+  event.preventDefault();
   let contact = {
     firstName: "",
     lastName: "",
-    address:"",
-    city:"",
-    email:"",
-  }
-
+    address: "",
+    city: "",
+    email: "",
+  };
+// RECUPERATION DE CHAQUE DONNEES DANS TABLEAU REGEX 
   for (let input of inputRegex) {
-    contact[input.id]=document.getElementById(input.id).value
+    contact[input.id] = document.getElementById(input.id).value;
   }
-  
+
   fetch("http://localhost:3000/api/products/order", {
-    method: 'POST',
-    headers : {
-      'Content-Type':'application/json'
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify( {
+    body: JSON.stringify({
       contact: contact,
-      products: myCart.map((item)=>item.id ) 
-    })
+      products: myCart.map((item) => item.id),
+    }),
   })
-
-
-
-  // console.log(contact)
-
-})
+    .then(function (rep) {
+      return rep.json();
+    })
+    .then(function (data) {
+      let orderId = data.orderId;
+      const location = window.location.host;
+      localStorage.clear();
+      window.location.replace(`/front/html/confirmation.html?id=${orderId}`);
+    });
+});
