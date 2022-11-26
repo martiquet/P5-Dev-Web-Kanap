@@ -191,6 +191,7 @@ orderBtn.addEventListener("click", (event) => {
     contact[input.id] = document.getElementById(input.id).value;
   }
 
+  // RECUPERATION DE L'ID DE COMMANDE ET ENVOIE DE CONTACT + PANIER
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     headers: {
