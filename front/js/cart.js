@@ -132,8 +132,6 @@ if (myCart) {
           myCart[i].nombre = parseInt(inputQuant.value);
           updateMyCart();
           updatePriceQuant();
-
-          console.log(updateTotalPrice);
         }
       });
     });
@@ -169,7 +167,6 @@ function checkRegex() {
       } else {
         error.textContent = "";
       }
-      console.log(input.regex.test(inputHtml.value));
     });
   }
 }
@@ -186,7 +183,7 @@ orderBtn.addEventListener("click", (event) => {
     city: "",
     email: "",
   };
-// RECUPERATION DE CHAQUE DONNEES DANS TABLEAU REGEX 
+  // RECUPERATION DE CHAQUE DONNEES DANS TABLEAU REGEX
   for (let input of inputRegex) {
     contact[input.id] = document.getElementById(input.id).value;
   }
