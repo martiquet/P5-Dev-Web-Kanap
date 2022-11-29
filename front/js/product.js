@@ -66,7 +66,7 @@ function savePanier() {
     alert(
       "Veuillez choisir une couleur et une quantité comprise entre 1 et 100"
     );
-  } else if (savedCart.length > 0) {
+  } else if (savedCart && savedCart.length > 0) {
     // SI PANIER EXISTANT, RECUPERATION JSON PARSE(TABLEAU)
     let parsedCart = JSON.parse(savedCart);
     myProducts = parsedCart;
