@@ -111,13 +111,17 @@ if (myCart) {
       // SUPPRESSION D'UN ARTICLE ET MISE A JOUR TABLEAU // LOCALE STORAGE // PRIX TOTAL
 
       deleteItem.addEventListener("click", function () {
+        let deleteId = deleteArticle.getAttribute("data-id");
+        let deleteColor = deleteArticle.getAttribute("data-color");
         let returnCart = myCart.findIndex(
-          (item) => item.id == myCart[i].id && item.couleur == myCart[i].couleur
+          (item) => item.id == deleteId && item.couleur == deleteColor
         );
+
         myCart.splice(returnCart, 1);
         updateMyCart();
         deleteArticle.remove();
-        console.log(myCart);
+        console.log(returnCart);
+
         updatePriceQuant();
       });
 
@@ -176,6 +180,7 @@ checkRegex();
 // FONCTION COMMANDER AU CLICK
 orderBtn.addEventListener("click", (event) => {
   event.preventDefault();
+  let contactOk = true;
   let contact = {
     firstName: "",
     lastName: "",
@@ -183,29 +188,40 @@ orderBtn.addEventListener("click", (event) => {
     city: "",
     email: "",
   };
+
   // RECUPERATION DE CHAQUE DONNEES DANS TABLEAU REGEX
   for (let input of inputRegex) {
     contact[input.id] = document.getElementById(input.id).value;
+    if (!contact[input.id]) {
+      contactOk = false;
+    }
   }
 
-  // RECUPERATION DE L'ID DE COMMANDE ET ENVOIE DE CONTACT + PANIER
-  fetch("http://localhost:3000/api/products/order", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      contact: contact,
-      products: myCart.map((item) => item.id),
-    }),
-  })
-    .then(function (rep) {
-      return rep.json();
+  if (!myCart) {
+    alert("Votre panier est vide");
+  } else if (!contactOk) {
+    alert("Veuillez remplir le formulaire")
+  }
+    else {
+    // RECUPERATION DE L'ID DE COMMANDE ET ENVOIE DE CONTACT + PANIER
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contact: contact,
+        products: myCart.map((item) => item.id),
+      }),
     })
-    .then(function (data) {
-      let orderId = data.orderId;
-      const location = window.location.host;
-      localStorage.clear();
-      window.location.replace(`/front/html/confirmation.html?id=${orderId}`);
-    });
+      .then(function (rep) {
+        return rep.json();
+      })
+      .then(function (data) {
+        let orderId = data.orderId;
+        const location = window.location.host;
+        localStorage.clear();
+        window.location.replace(`/front/html/confirmation.html?id=${orderId}`);
+      });
+  }
 });

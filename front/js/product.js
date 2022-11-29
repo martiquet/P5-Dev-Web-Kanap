@@ -66,7 +66,7 @@ function savePanier() {
     alert(
       "Veuillez choisir une couleur et une quantité comprise entre 1 et 100"
     );
-  } else if (savedCart) {
+  } else if (savedCart.length > 0) {
     // SI PANIER EXISTANT, RECUPERATION JSON PARSE(TABLEAU)
     let parsedCart = JSON.parse(savedCart);
     myProducts = parsedCart;
@@ -85,17 +85,20 @@ function savePanier() {
         });
       } else {
         // SI > 100
-        alert("Votre nombre de ");
+        alert("Votre nombre de produit doit être compris entre 1 et 100");
         return;
       }
     } else {
       // SI ID ET COULEUR NON EXISTANTE AJOUTER OBJET
 
       myProducts.push(addProducts);
+      alert("Votre produit à bien été ajouter au panier")
     }
   } else {
     myProducts.push(addProducts);
+    alert("Votre produit à bien été ajouter au panier")
   }
 
   window.localStorage.setItem("panier", JSON.stringify(myProducts));
+  
 }
