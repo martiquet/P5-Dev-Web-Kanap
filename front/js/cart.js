@@ -197,7 +197,7 @@ orderBtn.addEventListener("click", (event) => {
     }
   }
 
-  if (!myCart) {
+  if (!myCart || !myCart.length) {
     alert("Votre panier est vide");
   } else if (!contactOk) {
     alert("Veuillez remplir le formulaire")
